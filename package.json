@@ -1,0 +1,9 @@
+{
+  "name": "postcss-brunch",
+  "version": "0.1.0",
+  "description": "Adds PostCSS support to brunch.",
+  "main": "./lib/index",
+  "dependencies": {
+    "postcss": "0.3.4"
+  }
+}
