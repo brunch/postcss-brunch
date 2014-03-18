@@ -1,9 +1,20 @@
 {
   "name": "postcss-brunch",
   "version": "0.1.0",
+  "author": "Vincent De Oliveira",
   "description": "Adds PostCSS support to brunch.",
   "main": "./lib/index",
+  "keywords": [
+    "postcss",
+    "brunch",
+    "postprocessor"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamvdo/postcss-brunch.git"
+  },
   "dependencies": {
     "postcss": "0.3.4"
-  }
+  },
+  "license": "MIT"
 }
