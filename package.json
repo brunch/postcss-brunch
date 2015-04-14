@@ -14,7 +14,7 @@
     "url": "https://github.com/iamvdo/postcss-brunch.git"
   },
   "dependencies": {
-    "postcss": ">= 4.0.0"
+    "postcss": "4.x.x"
   },
   "license": "MIT"
 }
