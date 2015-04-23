@@ -4,6 +4,9 @@
   "author": "Vincent De Oliveira",
   "description": "Adds PostCSS support to brunch.",
   "main": "./lib/index",
+  "scripts": {
+    "test": "mocha test"
+  },
   "keywords": [
     "postcss",
     "brunch",
@@ -16,5 +19,9 @@
   "dependencies": {
     "postcss": "~4.1.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.2.4",
+    "should": "^6.0.1"
+  }
 }
