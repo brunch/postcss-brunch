@@ -33,6 +33,9 @@ describe('Plugin', function () {
 
   describe('Options', function () {
 
+    var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
+    var expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
+
     beforeEach(function() {
       config = {
         plugins: {
@@ -53,8 +56,6 @@ describe('Plugin', function () {
     });
 
     it('compile with options', function (done) {
-      var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
-      var expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
       plugin.compile({data: css}, function (err, data) {
         data.should.be.eql(expected);
         done();
@@ -62,8 +63,6 @@ describe('Plugin', function () {
     });
 
     it('optimize with options', function (done) {
-      var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
-      var expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
       plugin.optimize({data: css}, function (err, data) {
         data.should.be.eql(expected);
         done();
