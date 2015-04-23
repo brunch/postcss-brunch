@@ -23,6 +23,14 @@ describe('Plugin', function () {
     });
   });
 
+  it('optimize', function (done) {
+    var css = 'a{a:a}';
+    plugin.optimize({data: css}, function (err, data) {
+      data.should.be.eql(css);
+      done();
+    });
+  });
+
   describe('Options', function () {
 
     beforeEach(function() {
@@ -48,6 +56,15 @@ describe('Plugin', function () {
       var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
       var expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
       plugin.compile({data: css}, function (err, data) {
+        data.should.be.eql(expected);
+        done();
+      });
+    });
+
+    it('optimize with options', function (done) {
+      var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
+      var expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
+      plugin.optimize({data: css}, function (err, data) {
         data.should.be.eql(expected);
         done();
       });
