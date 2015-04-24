@@ -9,7 +9,7 @@ Adds [PostCSS](https://github.com/ai/postcss) support to [brunch](https://github
 Add this package to your `package.json` file, then `npm install`.
 
 	{
-		"postcss-brunch": "0.2.x"
+		"postcss-brunch": "0.3.x"
 	}
 
 Or you can `npm install --save postcss-brunch`.
@@ -29,14 +29,15 @@ Then, configure `postcss-brunch` in the `plugins` section of your `brunch-config
 ```javascript
 	plugins:
 		postcss:
-			config: (postcss) ->
-				postcss().
-				use(require('autoprefixer')(['last 8 versions']).postcss).
-				use(require('css-mqpacker').processor)
+			processors: [
+				require('autoprefixer')(['last 8 versions']),
+				require('css-mqpacker'),
+				require('csswring')
+			]
 ```
 
-You can pipe as many plugins as you want. CSS will be parsed only once. See [PostCSS](https://github.com/ai/postcss) and each plugins docs.
+You can add as many processors as you want. CSS will be parsed only once. See [PostCSS](https://github.com/ai/postcss) and each plugins docs.
 
-##Note
+## License
 
-I don't know if it's a good way of doing things. If you're interested, please let's talk about. :) It'a still a WIP.
+MIT
