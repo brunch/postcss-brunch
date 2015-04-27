@@ -15,14 +15,6 @@ describe('Plugin', function () {
     plugin.should.be.ok;
   });
 
-  it('compile', function (done) {
-    var css = 'a{a:a}';
-    plugin.compile({data: css}, function (err, data) {
-      data.should.be.eql(css);
-      done();
-    });
-  });
-
   it('optimize', function (done) {
     var css = 'a{a:a}';
     plugin.optimize({data: css}, function (err, data) {
@@ -53,13 +45,6 @@ describe('Plugin', function () {
 
     it('uses processors', function() {
       plugin.processors.should.be.an.instanceof(Array).with.lengthOf(3);
-    });
-
-    it('compile with options', function (done) {
-      plugin.compile({data: css}, function (err, data) {
-        data.should.be.eql(expected);
-        done();
-      });
     });
 
     it('optimize with options', function (done) {
