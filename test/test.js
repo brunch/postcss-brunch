@@ -18,7 +18,7 @@ describe('Plugin', function () {
   it('optimize', function (done) {
     var css = 'a{a:a}';
     plugin.optimize({data: css}, function (err, data) {
-      data.should.be.eql(css);
+      data.data.should.be.eql(css);
       done();
     });
   });
@@ -49,7 +49,7 @@ describe('Plugin', function () {
 
     it('optimize with options', function (done) {
       plugin.optimize({data: css}, function (err, data) {
-        data.should.be.eql(expected);
+        data.data.should.be.eql(expected);
         done();
       });
     });
