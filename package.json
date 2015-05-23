@@ -10,7 +10,8 @@
   "keywords": [
     "postcss",
     "brunch",
-    "postprocessor"
+    "postprocessor",
+    "postcss-runner"
   ],
   "repository": {
     "type": "git",
