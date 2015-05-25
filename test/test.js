@@ -7,12 +7,27 @@ describe('Plugin', function () {
   var plugin, config;
 
   beforeEach(function() {
-    config = {};
+    config = {
+      plugins: {
+        postcss: {
+          processors: [
+            require('autoprefixer-core')({browsers: 'last 99 versions'}),
+            require('css-mqpacker'),
+            require('csswring')
+          ]
+        }
+      }
+    };
     plugin = new Plugin(config);
   });
 
   it('should be an object', function() {
+    plugin = new Plugin({});
     plugin.should.be.ok;
+  });
+
+  it('uses processors', function() {
+    plugin.processors.should.be.an.instanceof(Array).with.lengthOf(3);
   });
 
   it('optimize', function (done) {
@@ -23,37 +38,13 @@ describe('Plugin', function () {
     });
   });
 
-  describe('Options', function () {
-
+  it('optimize with options', function (done) {
     var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
     var expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
-
-    beforeEach(function() {
-      config = {
-        plugins: {
-          postcss: {
-            processors: [
-              require('autoprefixer-core')({browsers: 'last 99 versions'}),
-              require('css-mqpacker'),
-              require('csswring')
-            ]
-          }
-        }
-      };
-      plugin = new Plugin(config);
+    plugin.optimize({data: css}, function (err, data) {
+      data.data.should.be.eql(expected);
+      done();
     });
-
-    it('uses processors', function() {
-      plugin.processors.should.be.an.instanceof(Array).with.lengthOf(3);
-    });
-
-    it('optimize with options', function (done) {
-      plugin.optimize({data: css}, function (err, data) {
-        data.data.should.be.eql(expected);
-        done();
-      });
-    });
-
   });
 
 });
