@@ -47,4 +47,19 @@ describe('Plugin', function () {
     });
   });
 
+  it('optimize with sourcemaps', function (done) {
+    var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
+    var map = {
+      version: 3,
+      sources: [ 'sample.css' ],
+      names: [],
+      mappings: 'AAKA,QACE,oBAAc,AAAd,qBAAc,AAAd,iBAAc,AAAd,oBAAc,AAAd,YAAc,CACf,AAPD,cACE,GACE,UAAY,CACb,AAMD,GACE,UAAY,CACb,CAPF',
+      file: 'sample.css'
+    };
+    plugin.optimize({data: css, path: 'test/fixtures/sample.css'}, function (err, data) {
+      data.map.should.be.eql(map);
+      done();
+    });
+  });
+
 });
