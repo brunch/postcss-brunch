@@ -1,4 +1,4 @@
-##0.4.0
+##0.4.0 - 2015-05-25
 
 - Pass PostCSS Runner Guidelines
 - Add sourcemaps support
