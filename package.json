@@ -18,7 +18,8 @@
     "url": "https://github.com/iamvdo/postcss-brunch.git"
   },
   "dependencies": {
-    "postcss": "^4.1.0"
+    "postcss": "^4.1.0",
+    "progeny": "^0.5.2"
   },
   "license": "MIT",
   "devDependencies": {
@@ -26,6 +27,7 @@
     "css-mqpacker": "^3.1.0",
     "csswring": "^3.0.3",
     "mocha": "^2.2.4",
+    "postcss-import": "^6.2.0",
     "should": "^6.0.1"
   }
 }
