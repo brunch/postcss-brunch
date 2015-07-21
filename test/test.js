@@ -8,6 +8,8 @@ describe('Plugin', function () {
 
   beforeEach(function() {
     config = {
+      paths: {root: '.'},
+      optimize: true,
       plugins: {
         postcss: {
           processors: [
@@ -22,7 +24,7 @@ describe('Plugin', function () {
   });
 
   it('should be an object', function() {
-    plugin = new Plugin({});
+    plugin = new Plugin(config);
     plugin.should.be.ok;
   });
 
