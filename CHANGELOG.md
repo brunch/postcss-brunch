@@ -1,3 +1,7 @@
+##0.4.2 - 2015-07-21
+
+- Fixed: recompile root file when imported files starting with `_` are modified
+
 ##0.4.1 - 2015-05-28
 
 - Fixed: crash when there is a previous source map
