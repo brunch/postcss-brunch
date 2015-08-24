@@ -1,3 +1,7 @@
+##0.5.0 - 2015-08-24
+
+- Update to PostCSS 5.0
+
 ##0.4.2 - 2015-07-21
 
 - Fixed: recompile root file when imported files starting with `_` are modified
