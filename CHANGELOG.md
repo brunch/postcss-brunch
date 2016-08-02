@@ -1,3 +1,7 @@
+##0.6.0 - 2016-08-02
+
+- Use new Brunch plugin API (#16)
+
 ##0.5.0 - 2015-08-24
 
 - Update to PostCSS 5.0
