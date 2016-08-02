@@ -1,19 +1,19 @@
-var Plugin = require("../lib");
-var fs = require('fs');
-var should = require('should');
+'use strict';
+const Plugin = require('../lib');
+const fs = require('fs');
+const should = require('should');
 
-describe('Plugin', function () {
+describe('Plugin', () => {
 
-  var plugin, config;
+  let plugin, config;
 
-  beforeEach(function() {
+  beforeEach(() => {
     config = {
       paths: {root: '.'},
-      optimize: true,
       plugins: {
         postcss: {
           processors: [
-            require('autoprefixer-core')({browsers: 'last 99 versions'}),
+            require('autoprefixer')({browsers: 'last 99 versions'}),
             require('css-mqpacker'),
             require('csswring')
           ]
@@ -23,44 +23,40 @@ describe('Plugin', function () {
     plugin = new Plugin(config);
   });
 
-  it('should be an object', function() {
-    plugin = new Plugin(config);
-    plugin.should.be.ok;
+  it('should be an object', () => {
+    plugin.should.be.an.Object;
   });
 
-  it('uses processors', function() {
-    plugin.processors.should.be.an.instanceof(Array).with.lengthOf(3);
+  it('uses processors', () => {
+    plugin.processors.should.be.an.Array.with.lengthOf(3);
   });
 
-  it('optimize', function (done) {
-    var css = 'a{a:a}';
-    plugin.optimize({data: css}, function (err, data) {
-      data.data.should.be.eql(css);
-      done();
+  it('compile', () => {
+    const data = 'a{a:a}';
+    return plugin.compile({data}, file => {
+      file.data.should.be.eql(data);
     });
   });
 
-  it('optimize with options', function (done) {
-    var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
-    var expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
-    plugin.optimize({data: css}, function (err, data) {
-      data.data.should.be.eql(expected);
-      done();
+  it('compile with options', () => {
+    const data = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
+    const expected = fs.readFileSync('test/fixtures/sample.out.css', 'utf-8');
+    return plugin.compile({data}, actual => {
+      actual.data.should.be.eql(expected);
     });
   });
 
-  it('optimize with sourcemaps', function (done) {
-    var css = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
-    var map = {
+  it('compile with sourcemaps', () => {
+    const data = fs.readFileSync('test/fixtures/sample.css', 'utf-8');
+    const map = {
       version: 3,
       sources: [ 'sample.css' ],
       names: [],
       mappings: 'AAKA,QACE,oBAAc,AAAd,qBAAc,AAAd,iBAAc,AAAd,oBAAc,AAAd,YAAc,CACf,AAPD,cACE,GACE,UAAY,CACb,AAMD,GACE,UAAY,CACb,CAPF',
       file: 'sample.css'
     };
-    plugin.optimize({data: css, path: 'test/fixtures/sample.css'}, function (err, data) {
-      data.map.should.be.eql(map);
-      done();
+    return plugin.compile({data, path: 'test/fixtures/sample.css'}, file => {
+      file.map.should.be.eql(map);
     });
   });
 
