@@ -6,7 +6,7 @@ Adds [PostCSS](https://github.com/ai/postcss) support to [brunch](https://github
 
 ## Install
 
-	npm install --save postcss-brunch
+	npm install --save-dev postcss-brunch
 
 ## Add plugins
 
