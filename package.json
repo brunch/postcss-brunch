@@ -3,7 +3,6 @@
   "version": "0.6.0",
   "author": "Vincent De Oliveira",
   "description": "Adds PostCSS support to brunch.",
-  "main": "./lib/index",
   "scripts": {
     "test": "mocha test"
   },
@@ -15,12 +14,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/iamvdo/postcss-brunch.git"
+    "url": "https://github.com/brunch/postcss-brunch.git"
   },
   "dependencies": {
     "loggy": "~0.3.5",
     "postcss": "^5.0.0",
-    "progeny": "^0.9.0"
+    "progeny": "~0.9.0"
   },
   "license": "MIT",
   "devDependencies": {
