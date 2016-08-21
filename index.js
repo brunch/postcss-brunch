@@ -9,6 +9,21 @@ const defaultMapper = {
 	sourcesContent: false,
 };
 
+const pad = (stringeable, length) => {
+	return ' '.repeat(length - String(stringeable).length) + String(stringeable);
+};
+
+const notify = (warnings) => {
+	if (!warnings.length) return;
+	const str = warnings.map(warn => {
+		const line = warn.line ? `line ${pad(warn.line, 4)}` : ''
+		const col = warn.col ? ` col ${pad(warn.col, 3)}` : ''
+		const node = warn.node ? ' ' + warn.node.toString() : '';
+		return `\t[${warn.plugin}]:${node}\t${line}${col}: ${warn.text}\n`;
+	}).join('\n');
+	logger.warn(`postcss-brunch: ${str}`);
+}
+
 class PostCSSCompiler {
 	constructor(config) {
 		const rootPath = config.paths.root;
@@ -31,7 +46,7 @@ class PostCSSCompiler {
 		}
 
 		return this.processor.process(file.data, opts).then(result => {
-			result.warnings().forEach(warn => logger.warn(warn));
+			notify(result.warnings());
 
 			return {
 				path,
@@ -40,7 +55,7 @@ class PostCSSCompiler {
 			};
 		}).catch(error => {
 			if (error.name === 'CssSyntaxError') {
-				throw new Error(error.message + error.showSourceCode());
+				throw new Error('postcss-brunch syntax error: ' + error.message + error.showSourceCode());
 			}
 			throw error;
 		});
