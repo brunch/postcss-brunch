@@ -1,4 +1,5 @@
 'use strict';
+const sysPath = require('path');
 const postcss = require('postcss');
 const progeny = require('progeny');
 const logger = require('loggy');
@@ -48,10 +49,19 @@ class PostCSSCompiler {
 		return this.processor.process(file.data, opts).then(result => {
 			notify(result.warnings());
 
+			const mapping = result.map.toJSON();
+			// Not sure why postcss gives the basename instead of the full path;
+			// TODO: investigate.
+			// For now, "the solution":
+			const src = mapping.sources;
+			if (src && src.length === 1 && src[0] === sysPath.basename(path)) {
+				src[0] = path;
+			}
+
 			return {
 				path,
 				data: result.css,
-				map: result.map.toJSON(),
+				map: mapping,
 			};
 		}).catch(error => {
 			if (error.name === 'CssSyntaxError') {
