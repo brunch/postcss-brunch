@@ -40,7 +40,8 @@ class PostCSSCompiler {
 
 	compile(file) {
 		const path = file.path;
-		const opts = {from: path, to: path, map: this.map};
+		console.log(111, path);
+		const opts = {from: path, to: sysPath.basename(path), map: this.map};
 
 		if (file.map) {
 			opts.map.prev = file.map.toJSON();
