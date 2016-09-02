@@ -40,7 +40,6 @@ class PostCSSCompiler {
 
 	compile(file) {
 		const path = file.path;
-		console.log(111, path);
 		const opts = {from: path, to: sysPath.basename(path), map: this.map};
 
 		if (file.map) {
@@ -80,4 +79,3 @@ Object.assign(PostCSSCompiler.prototype, {
 });
 
 module.exports = PostCSSCompiler;
-
