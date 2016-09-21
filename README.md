@@ -37,6 +37,55 @@ plugins: {
 
 You can add as many processors as you want. CSS will be parsed only once. See [PostCSS](https://github.com/ai/postcss) and each plugins docs.
 
+### CSS Modules
+
+You can use CSS Modules with postcss-brunch. To enable it, change your config to:
+
+```javascript
+module.exports = {
+  // ...
+  plugins: {
+    postcss: {
+      modules: true
+    }
+  }
+};
+```
+
+You can also pass options directly to
+[postcss-modules](https://github.com/css-modules/postcss-modules):
+
+```javascript
+module.exports = {
+  // ...
+  plugins: {
+    postcss: {
+      modules: {
+        generateScopedName: '[name]__[local]___[hash:base64:5]'
+      }
+    }
+  }
+};
+```
+
+Then, author your styles like you normally would:
+
+```css
+.title {
+  font-size: 32px;
+}
+```
+
+And reference CSS class names by requiring the specific style into your javascript:
+
+```javascript
+var style = require('./title.css');
+
+<h1 className={style.title}>Yo</h1>
+```
+
+Note: enabling `modules` does so for every stylesheet in your project, so it's all-or-nothing. Even the files you don't require will be transformed into CSS modules (aka will have obfuscated class names, like turn `.title` into `._title_fdphn_1`).
+
 ## License
 
 MIT
