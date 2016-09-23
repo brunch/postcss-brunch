@@ -1,6 +1,7 @@
 'use strict';
 const sysPath = require('path');
 const postcss = require('postcss');
+const postcssModules = require('postcss-modules');
 const progeny = require('progeny');
 const logger = require('loggy');
 
@@ -25,6 +26,17 @@ const notify = (warnings) => {
 	logger.warn(`postcss-brunch: ${str}`);
 }
 
+const cssModulify = (path, data, map, options) => {
+	let json = {};
+	const getJSON = (_, _json) => json = _json;
+
+	return postcss([postcssModules(Object.assign({}, {getJSON}, options))])
+		.process(data, {from: path, map}).then(x => {
+			const exports = 'module.exports = ' + JSON.stringify(json) + ';';
+			return { data: x.css, map: x.map, exports };
+		});
+};
+
 class PostCSSCompiler {
 	constructor(config) {
 		const rootPath = config.paths.root;
@@ -36,6 +48,7 @@ class PostCSSCompiler {
 			defaultMapper;
 		this.getDependencies = progeny({rootPath, reverseArgs: true});
 		this.processor = postcss(proc);
+		this.modules = !!this.config.modules;
 	}
 
 	compile(file) {
@@ -58,11 +71,16 @@ class PostCSSCompiler {
 				src[0] = path;
 			}
 
-			return {
-				path,
-				data: result.css,
-				map: mapping,
-			};
+			if (this.modules) {
+				const moduleOptions = this.modules === true ? {} : this.modules;
+				return cssModulify(path, result.css, mapping, moduleOptions);
+			} else {
+				return {
+					path,
+					data: result.css,
+					map: mapping,
+				};
+			}
 		}).catch(error => {
 			if (error.name === 'CssSyntaxError') {
 				throw new Error('postcss-brunch syntax error: ' + error.message + error.showSourceCode());
