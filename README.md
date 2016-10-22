@@ -86,6 +86,27 @@ var style = require('./title.css');
 
 Note: enabling `modules` does so for every stylesheet in your project, so it's all-or-nothing. Even the files you don't require will be transformed into CSS modules (aka will have obfuscated class names, like turn `.title` into `._title_fdphn_1`).
 
+### Dependencies
+
+You can pass options for [progeny](https://github.com/es128/progeny) which retrieves dependencies for the input CSS file.
+
+For example, if you use [postcss-partial-import](https://github.com/jonathantneal/postcss-partial-import) plugin, your CSS files
+prefixed with underscore and have `.css` extension. In this case, you need pass to progeny `prefix` option, so brunch can
+properly rebuild your partials on their change.
+
+```javascript
+module.exports = {
+   // ...
+   plugins: {
+      postcss: {
+         progeny: {
+            prefix: '_'
+         }
+      }
+   }
+}
+```
+
 ## License
 
 MIT

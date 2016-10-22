@@ -46,7 +46,8 @@ class PostCSSCompiler {
 		this.map = this.config.map ?
 			Object.assign({}, defaultMapper, this.config.map) :
 			defaultMapper;
-		this.getDependencies = progeny({rootPath, reverseArgs: true});
+      const progenyOpts = Object.assign({}, {rootPath, reverseArgs: true}, cfg.progeny);
+		this.getDependencies = progeny(progenyOpts);
 		this.processor = postcss(proc);
 		this.modules = !!this.config.modules;
 	}
