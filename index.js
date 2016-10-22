@@ -48,7 +48,7 @@ class PostCSSCompiler {
 			defaultMapper;
 		this.getDependencies = progeny({rootPath, reverseArgs: true});
 		this.processor = postcss(proc);
-		this.modules = !!this.config.modules;
+		this.modules = this.config.modules;
 	}
 
 	optimize(file) {
