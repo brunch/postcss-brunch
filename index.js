@@ -51,7 +51,7 @@ class PostCSSCompiler {
 		this.modules = this.config.modules;
 	}
 
-	optimize(file) {
+	compile(file) {
 		const path = file.path;
 		const opts = {from: path, to: sysPath.basename(path), map: this.map};
 

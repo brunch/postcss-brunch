@@ -54,7 +54,7 @@ describe('Plugin', () => {
 
   it('compile', () => {
     const data = 'a{a:a}';
-    return plugin.optimize({path: 'a.css', data}).then(file => {
+    return plugin.compile({path: 'a.css', data}).then(file => {
       file.data.should.be.eql(data);
     });
   });
@@ -62,7 +62,7 @@ describe('Plugin', () => {
   it('compile with options', () => {
      const data = fs.readFileSync('fixtures/sample.css', 'utf-8');
      const expected = fs.readFileSync('fixtures/sample.out.css', 'utf-8');
-     return plugin.optimize({path: 'a.css', data}).then(actual => {
+     return plugin.compile({path: 'a.css', data}).then(actual => {
        actual.data.should.eql(expected);
      });
   });
@@ -76,7 +76,7 @@ describe('Plugin', () => {
       mappings: 'AAKA,QACE,oBAAc,AAAd,qBAAc,AAAd,iBAAc,AAAd,oBAAc,AAAd,YAAc,CACf,AAPD,cACE,GACE,UAAY,CACb,AAMD,GACE,UAAY,CACb,CAPF',
       file: 'sample.css'
     };
-    return plugin.optimize({data, path: 'fixtures/sample.css'}).then(file => {
+    return plugin.compile({data, path: 'fixtures/sample.css'}).then(file => {
       file.map.should.be.eql(map);
     });
   });
