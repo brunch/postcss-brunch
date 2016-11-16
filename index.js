@@ -89,6 +89,10 @@ class PostCSSCompiler {
 			throw error;
 		});
 	}
+
+	optimize(file) {
+		return this.compile(file);
+	}
 }
 
 Object.assign(PostCSSCompiler.prototype, {

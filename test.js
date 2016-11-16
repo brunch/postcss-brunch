@@ -59,6 +59,13 @@ describe('Plugin', () => {
     });
   });
 
+  it('optimize', () => {
+    const data = 'a{a:a}';
+    return plugin.optimize({path: 'a.css', data}).then(file => {
+      file.data.should.be.eql(data);
+    });
+  });
+
   it('compile with options', () => {
      const data = fs.readFileSync('fixtures/sample.css', 'utf-8');
      const expected = fs.readFileSync('fixtures/sample.out.css', 'utf-8');
