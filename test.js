@@ -81,4 +81,11 @@ describe('Plugin', () => {
     });
   });
 
+  it('compile when no data given', () => {
+    const expected = '';
+    return plugin.compile({path: 'a.css'}).then(actual => {
+      actual.data.should.eql(expected);
+    });
+  });
+
 });
