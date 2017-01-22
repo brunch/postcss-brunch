@@ -29,6 +29,7 @@
     "csswring": "^5.1.0",
     "mocha": "^3.0.0",
     "postcss-import": "^8.1.2",
-    "should": "^11.1.0"
+    "should": "^11.1.0",
+    "sugarss": "^0.2.0"
   }
 }

@@ -39,22 +39,28 @@ const cssModulify = (path, data, map, options) => {
 
 class PostCSSCompiler {
 	constructor(config) {
-		const rootPath = config.paths.root;
-		const cfg = config.plugins.postcss;
-		this.config = cfg || {};
-		const proc = cfg && cfg.processors || [];
+		this.config = config.plugins.postcss || {};
 		this.map = this.config.map ?
 			Object.assign({}, defaultMapper, this.config.map) :
 			defaultMapper;
-		const progenyOpts = Object.assign({rootPath, reverseArgs: true}, cfg.progeny);
+
+		const rootPath = config.paths.root;
+		const progenyOpts = Object.assign({rootPath, reverseArgs: true},
+			this.config.progeny);
 		this.getDependencies = progeny(progenyOpts);
+
+		const proc = this.config.processors || [];
 		this.processor = postcss(proc);
+
 		this.modules = this.config.modules;
+		this.other = this.config.other;
+		this.extension = this.config.extension || 'css';
 	}
 
 	compile(file) {
 		const path = file.path;
-		const opts = {from: path, to: sysPath.basename(path), map: this.map};
+		const opts = Object.assign({from: path, to: sysPath.basename(path),
+			map: this.map}, this.other);
 
 		if (file.data === undefined) {
 			file.data = '';
@@ -96,8 +102,7 @@ class PostCSSCompiler {
 
 Object.assign(PostCSSCompiler.prototype, {
 	brunchPlugin: true,
-	type: 'stylesheet',
-	extension: 'css',
+	type: 'stylesheet'
 });
 
 module.exports = PostCSSCompiler;
