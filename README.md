@@ -37,6 +37,40 @@ plugins: {
 
 You can add as many processors as you want. CSS will be parsed only once. See [PostCSS](https://github.com/ai/postcss) and each plugins docs.
 
+### Passing options to PostCSS
+
+You can pass options directly to PostCSS by using the `other` key in the options.
+For example if you want to use the SugarSS parser:
+
+```javascript
+const sugarss = require('sugarss');
+
+module.exports = {
+  // ...
+  plugins: {
+    postcss: {
+      other: {parser: sugarss}
+    }
+  }
+};
+```
+
+### File extension
+
+If you want to change the file extension that this plugin in looking for, then
+you can use the `extension` key:
+
+```javascript
+module.exports = {
+  // ...
+  plugins: {
+    postcss: {
+      extension: "scss"
+    }
+  }
+};
+```
+
 ### CSS Modules
 
 You can use CSS Modules with postcss-brunch. To enable it, change your config to:

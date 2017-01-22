@@ -3,6 +3,7 @@ const Plugin = require('./index');
 const fs = require('fs');
 const should = require('should');
 const Mocha = require('mocha');
+const sugarss = require('sugarss');
 
 describe ('Tests', () => {
    const blankOpts = { reporter: function(){} }; // no output
@@ -24,68 +25,88 @@ describe ('Tests', () => {
 });
 
 
-describe('Plugin', () => {
+describe('PostCSSCompiler', () => {
+    describe('with the default options', () => {
+        let plugin, config;
 
-  let plugin, config;
+        beforeEach(() => {
+            config = {
+                paths: {root: '.'},
+                plugins: {
+                    postcss: {
+                        processors: [
+                            require('autoprefixer')({browsers: 'last 99 versions'}),
+                            require('css-mqpacker'),
+                            require('csswring')
+                        ]
+                    }
+                }
+            };
+            plugin = new Plugin(config);
+        });
 
-  beforeEach(() => {
-    config = {
-      paths: {root: '.'},
-      plugins: {
-        postcss: {
-          processors: [
-            require('autoprefixer')({browsers: 'last 99 versions'}),
-            require('css-mqpacker'),
-            require('csswring')
-          ]
-        }
-      }
-    };
-    plugin = new Plugin(config);
-  });
+        it('should be an object', () => {
+            plugin.should.be.an.Object;
+        });
 
-  it('should be an object', () => {
-    plugin.should.be.an.Object;
-  });
+        // it('uses processors', () => {
+        //   plugin.processors.should.be.an.Array().with.length(3);
+        // });
 
-  // it('uses processors', () => {
-  //   plugin.processors.should.be.an.Array().with.length(3);
-  // });
+        it('compile', () => {
+            const data = 'a{a:a}';
+            return plugin.compile({path: 'a.css', data}).then(file => {
+                file.data.should.be.eql(data);
+            });
+        });
 
-  it('compile', () => {
-    const data = 'a{a:a}';
-    return plugin.compile({path: 'a.css', data}).then(file => {
-      file.data.should.be.eql(data);
+        it('compile with options', () => {
+            const data = fs.readFileSync('fixtures/sample.css', 'utf-8');
+            const expected = fs.readFileSync('fixtures/sample.out.css', 'utf-8');
+            return plugin.compile({path: 'a.css', data}).then(actual => {
+                actual.data.should.eql(expected);
+            });
+        });
+
+        it('compile with sourcemaps', () => {
+            const data = fs.readFileSync('fixtures/sample.css', 'utf-8');
+            const map = {
+                version: 3,
+                sources: [ 'fixtures/sample.css' ],
+                names: [],
+                mappings: 'AAKA,QACE,oBAAc,AAAd,qBAAc,AAAd,iBAAc,AAAd,oBAAc,AAAd,YAAc,CACf,AAPD,cACE,GACE,UAAY,CACb,AAMD,GACE,UAAY,CACb,CAPF',
+                file: 'sample.css'
+            };
+            return plugin.compile({data, path: 'fixtures/sample.css'}).then(file => {
+                file.map.should.be.eql(map);
+            });
+        });
+
+        it('compile when no data given', () => {
+            const expected = '';
+            return plugin.compile({path: 'a.css'}).then(actual => {
+                actual.data.should.eql(expected);
+            });
+        });
     });
-  });
 
-  it('compile with options', () => {
-     const data = fs.readFileSync('fixtures/sample.css', 'utf-8');
-     const expected = fs.readFileSync('fixtures/sample.out.css', 'utf-8');
-     return plugin.compile({path: 'a.css', data}).then(actual => {
-       actual.data.should.eql(expected);
-     });
-  });
+    it('compile with a custom parser', () => {
+        const config = {
+            paths: {root: '.'},
+            plugins: {
+                postcss: {
+                    processors: [require('csswring')],
+                    other: {parser: sugarss}
+                }
+            }
+        };
 
-  it('compile with sourcemaps', () => {
-    const data = fs.readFileSync('fixtures/sample.css', 'utf-8');
-    const map = {
-      version: 3,
-      sources: [ 'fixtures/sample.css' ],
-      names: [],
-      mappings: 'AAKA,QACE,oBAAc,AAAd,qBAAc,AAAd,iBAAc,AAAd,oBAAc,AAAd,YAAc,CACf,AAPD,cACE,GACE,UAAY,CACb,AAMD,GACE,UAAY,CACb,CAPF',
-      file: 'sample.css'
-    };
-    return plugin.compile({data, path: 'fixtures/sample.css'}).then(file => {
-      file.map.should.be.eql(map);
-    });
-  });
+        const plugin = new Plugin(config);
+        const data = 'div.test >\na\n  color: blue';
+        const expected = 'div.test>a{color:blue}'
 
-  it('compile when no data given', () => {
-    const expected = '';
-    return plugin.compile({path: 'a.css'}).then(actual => {
-      actual.data.should.eql(expected);
-    });
-  });
-
+        return plugin.compile({data, path: 'a.css'}).then(file => {
+            file.data.should.be.eql(expected);
+        });
+    })
 });
