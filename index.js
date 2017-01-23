@@ -53,6 +53,7 @@ class PostCSSCompiler {
 	}
 
 	compile(file) {
+		if(!file.data) return Promise.resolve();
 		const path = file.path;
 		const opts = {from: path, to: sysPath.basename(path), map: this.map};
 
