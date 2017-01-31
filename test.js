@@ -37,6 +37,9 @@ describe('Plugin', () => {
             require('autoprefixer')({browsers: 'last 99 versions'}),
             require('css-mqpacker'),
             require('csswring')
+          ],
+          ignore: [
+            "postcssignore.css"
           ]
         }
       }
@@ -88,4 +91,11 @@ describe('Plugin', () => {
     });
   });
 
+
+  it('compile ignored file', () => {
+    const expected = 'h2 { color: red; }';
+    return plugin.compile({path: 'postcssignore.css', data: 'h2 { color: red; }'}).then(actual => {
+      actual.data.should.eql(expected);
+    });
+  });
 });
