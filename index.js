@@ -4,6 +4,7 @@ const postcss = require('postcss');
 const postcssModules = require('postcss-modules');
 const progeny = require('progeny');
 const logger = require('loggy');
+const anymatch = require('anymatch');
 
 const defaultMapper = {
 	inline: false,
@@ -43,16 +44,21 @@ class PostCSSCompiler {
 		const cfg = config.plugins.postcss;
 		this.config = cfg || {};
 		const proc = cfg && cfg.processors || [];
+		const ignoreCriterias = cfg && cfg.ignore || [];
 		this.map = this.config.map ?
 			Object.assign({}, defaultMapper, this.config.map) :
 			defaultMapper;
 		const progenyOpts = Object.assign({rootPath, reverseArgs: true}, cfg.progeny);
 		this.getDependencies = progeny(progenyOpts);
+		this.isIgnored = anymatch(ignoreCriterias);
 		this.processor = postcss(proc);
 		this.modules = this.config.modules;
 	}
 
 	compile(file) {
+	  if(this.isIgnored(file.path)) {
+	  	return Promise.resolve(file);
+		}
 		const path = file.path;
 		const opts = {from: path, to: sysPath.basename(path), map: this.map};
 
