@@ -43,6 +43,9 @@ class PostCSSCompiler {
 		const rootPath = config.paths.root;
 		const cfg = config.plugins.postcss;
 		this.config = cfg || {};
+		if ('pattern' in this.config) {
+			this.pattern = this.config.pattern;
+		}
 		const proc = cfg && cfg.processors || [];
 		const ignoreCriterias = cfg && cfg.ignore || [];
 		this.map = this.config.map ?
