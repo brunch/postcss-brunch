@@ -63,11 +63,11 @@ class PostCSSCompiler {
 			return Promise.resolve(file);
 		}
 		const path = file.path;
-		const opts = Object.assign(this.config, {
+		const opts = Object.assign({
 			from: path,
 			to: sysPath.basename(path),
 			map: this.map,
-		});
+		}, this.config);
 
 		if (file.data === undefined) {
 			file.data = '';
