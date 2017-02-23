@@ -4,7 +4,7 @@ const fs = require('fs');
 const should = require('should');
 const Mocha = require('mocha');
 
-describe ('Tests', () => {
+describe('Tests', () => {
    const blankOpts = { reporter: function(){} }; // no output
    it('should fail', done => {
       const failingTest = new Mocha.Test('failing Test', () => {
@@ -25,7 +25,6 @@ describe ('Tests', () => {
 
 
 describe('Plugin', () => {
-
   let plugin, config;
 
   beforeEach(() => {
@@ -91,11 +90,30 @@ describe('Plugin', () => {
     });
   });
 
-
   it('compile ignored file', () => {
     const expected = 'h2 { color: red; }';
     return plugin.compile({path: 'postcssignore.css', data: 'h2 { color: red; }'}).then(actual => {
       actual.data.should.eql(expected);
     });
   });
+
+  it('compile with custom parser', () => {
+    const data = fs.readFileSync('fixtures/parser.scss', 'utf-8');
+    const expected = fs.readFileSync('fixtures/parser.out.scss', 'utf-8');
+
+    const scssPlugin = new Plugin({
+      paths: {root: '.'},
+      plugins: {
+        postcss: {
+          options: {
+            parser: require('postcss-scss'),
+          },
+        },
+      },
+    });
+
+    return scssPlugin.compile({data, path: 'fixtures/parser.scss'}).then(actual => {
+      actual.data.should.be.equal(expected);
+    });
+  })
 });

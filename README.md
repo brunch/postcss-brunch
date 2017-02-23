@@ -37,6 +37,20 @@ plugins: {
 
 You can add as many processors as you want. CSS will be parsed only once. See [PostCSS](https://github.com/ai/postcss) and each plugins docs.
 
+### Options
+
+You can specify [PostCSS options](https://github.com/postcss/postcss#options), such as custom parser for CSS:
+
+```js
+plugins: {
+  postcss: {
+    options: {
+      parser: require('postcss-scss'),
+    },
+  },
+},
+```
+
 ### CSS Modules
 
 You can use CSS Modules with postcss-brunch. To enable it, change your config to:
