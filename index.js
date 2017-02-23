@@ -67,7 +67,7 @@ class PostCSSCompiler {
 			from: path,
 			to: sysPath.basename(path),
 			map: this.map,
-		}, this.config);
+		}, this.config.options);
 
 		if (file.data === undefined) {
 			file.data = '';

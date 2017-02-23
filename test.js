@@ -105,7 +105,9 @@ describe('Plugin', () => {
       paths: {root: '.'},
       plugins: {
         postcss: {
-          parser: require('postcss-scss'),
+          options: {
+            parser: require('postcss-scss'),
+          },
         },
       },
     });
