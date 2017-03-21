@@ -73,13 +73,13 @@ class PostCSSCompiler {
 			file.data = '';
 		}
 		if (file.map) {
-			opts.map.prev = file.map.toJSON();
+			opts.map.prev = JSON.stringify(file.map);
 		}
 
 		return this.processor.process(file.data, opts).then(result => {
 			notify(result.warnings());
 
-			const mapping = result.map.toJSON();
+			const mapping = JSON.stringify(result.map);
 			// Not sure why postcss gives the basename instead of the full path;
 			// TODO: investigate.
 			// For now, "the solution":
