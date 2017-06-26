@@ -132,8 +132,7 @@ describe('Plugin', () => {
       }
     });
 
-    return new Plugin(moduleConfig).compile({path: 'a.css', data})
-    .then(() => {
+    return new Plugin(moduleConfig).compile({path: 'a.css', data}).then(() => {
       should(customGetJSONCallback.calledOnce).be.true();
     });
   })
