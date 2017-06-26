@@ -29,7 +29,7 @@ const notify = (warnings) => {
 
 const cssModulify = (path, data, map, options) => {
 	let json = {};
-	const getJSON = (_, _json) => json = _json;
+	const { getJSON = (_, _json)=> json = _json } = options;
 
 	return postcss([postcssModules(Object.assign({}, {getJSON}, options))])
 		.process(data, {from: path, map}).then(x => {

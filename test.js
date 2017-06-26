@@ -3,6 +3,7 @@ const Plugin = require('./index');
 const fs = require('fs');
 const should = require('should');
 const Mocha = require('mocha');
+const sinon = require('sinon');
 
 describe('Tests', () => {
    const blankOpts = { reporter: function(){} }; // no output
@@ -114,6 +115,26 @@ describe('Plugin', () => {
 
     return scssPlugin.compile({data, path: 'fixtures/parser.scss'}).then(actual => {
       actual.data.should.be.equal(expected);
+    });
+  })
+
+  it('compile with custom getJSON method', ()=> {
+    const data = 'a{a:a}';
+    const customGetJSONCallback = sinon.stub().returns((_, json)=> json);
+
+    const moduleConfig = Object.assign(config, {
+      plugins: {
+        postcss:  Object.assign(config.plugins.postcss, {
+          modules: {
+            getJSON: customGetJSONCallback
+          }
+        })
+      }
+    });
+
+    return new Plugin(moduleConfig).compile({path: 'a.css', data})
+    .then(() => {
+      should(customGetJSONCallback.calledOnce).be.true();
     });
   })
 });
