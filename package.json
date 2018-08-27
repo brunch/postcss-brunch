@@ -21,7 +21,7 @@
     "loggy": "^1.0.2",
     "postcss": "^6.0.9",
     "postcss-modules": "^0.8.0",
-    "progeny": "^0.9.0"
+    "progeny": "^0.11.0"
   },
   "license": "MIT",
   "devDependencies": {
