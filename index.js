@@ -29,9 +29,18 @@ const notify = (warnings) => {
 
 const cssModulify = (path, data, map, options) => {
 	let json = {};
-	const getJSON = (_, _json) => json = _json;
 
-	return postcss([postcssModules(Object.assign({}, {getJSON}, options))])
+	const getJSON = (filename, _json)=> {
+		json = (
+			(
+				options.getJSON &&
+				options.getJSON(filename, _json)
+			) ||
+			_json
+		);
+	};
+
+	return postcss([postcssModules(Object.assign({}, options, {getJSON}))])
 		.process(data, {from: path, map}).then(x => {
 			const exports = 'module.exports = ' + JSON.stringify(json) + ';';
 			return { data: x.css, map: x.map, exports };
