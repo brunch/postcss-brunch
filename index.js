@@ -48,10 +48,10 @@ class PostCSSCompiler {
 		this.getDependencies = progeny(progenyOpts);
 		this.isIgnored = anymatch(this.config.ignore || []);
 
-		const procs = this.config.processors || [];
-		const compilers = procs.compile || procs;
+		const procs = [].concat(this.config.processors);
+		const compilers = [].concat(procs.compilers || procs);
 		this._compiler = postcss(compilers);
-		const optimizers = procs.optimize || [];
+		const optimizers = [].concat(procs.optimizers || []);
 		if (!optimizers.length) return;
 
 		this._optimizer = postcss(optimizers);
