@@ -6,12 +6,6 @@ const progeny = require('progeny');
 const logger = require('loggy');
 const anymatch = require('anymatch');
 
-const defaultMapper = {
-	inline: false,
-	annotation: false,
-	sourcesContent: false,
-};
-
 const pad = (stringeable, length) => {
 	return ' '.repeat(length - String(stringeable).length) + String(stringeable);
 };
@@ -25,13 +19,15 @@ const notify = (warnings) => {
 		return `\t[${warn.plugin}]:${node}\t${line}${col}: ${warn.text}\n`;
 	}).join('\n');
 	logger.warn(`postcss-brunch: ${str}`);
-}
+};
 
 const cssModulify = (path, data, map, options) => {
 	let json = {};
-	const getJSON = (_, _json) => json = _json;
+	const getJSON = (...args) => {
+		json = typeof options.getJSON === 'function' && options.getJSON(...args) || args[1]
+	};
 
-	return postcss([postcssModules(Object.assign({}, {getJSON}, options))])
+	return postcss([postcssModules(Object.assign({getJSON}, options))])
 		.process(data, {from: path, map}).then(x => {
 			const exports = 'module.exports = ' + JSON.stringify(json) + ';';
 			return { data: x.css, map: x.map, exports };
@@ -41,28 +37,62 @@ const cssModulify = (path, data, map, options) => {
 class PostCSSCompiler {
 	constructor(config) {
 		const rootPath = config.paths.root;
-		const cfg = config.plugins.postcss;
-		this.config = cfg || {};
-		if ('pattern' in this.config) {
-			this.pattern = this.config.pattern;
-		}
-		const proc = cfg && cfg.processors || [];
-		const ignoreCriterias = cfg && cfg.ignore || [];
-		this.map = this.config.map ?
-			Object.assign({}, defaultMapper, this.config.map) :
-			defaultMapper;
-		const progenyOpts = Object.assign({rootPath, reverseArgs: true}, cfg.progeny);
+		this.config = config.plugins.postcss || {};
+		this.pattern = this.config.pattern || /\.p?css$/i;
+		this.map = Object.assign({
+			inline: false,
+			annotation: false,
+			sourcesContent: false,
+		}, this.config.map);
+		const progenyOpts = Object.assign({rootPath, reverseArgs: true}, this.config.progeny);
 		this.getDependencies = progeny(progenyOpts);
-		this.isIgnored = anymatch(ignoreCriterias);
-		this.processor = postcss(proc);
-		this.modules = this.config.modules;
+		this.isIgnored = anymatch(this.config.ignore || []);
+
+		const procs = this.config.processors || [];
+		const compilers = procs.compile || procs;
+		this._compiler = postcss(compilers);
+		const optimizers = procs.optimize || [];
+		if (!optimizers.length) return;
+
+		this._optimizer = postcss(optimizers);
+		this.optimize = file => {
+			const path = file.path;
+			const opts = Object.assign({
+				from: path,
+				to: sysPath.basename(path),
+				map: this.map,
+			}, this.config.options);
+
+			if (file.data === undefined) {
+				file.data = '';
+			}
+			if (file.map) {
+				opts.map.prev = JSON.stringify(file.map);
+			}
+
+			return this._optimizer.process(file.data, opts).then(result => {
+				notify(result.warnings());
+
+				return {
+					path,
+					data: result.css,
+					map: JSON.stringify(result.map),
+				};
+			}).catch(error => {
+				if (error.name === 'CssSyntaxError') {
+					throw new Error('postcss-brunch syntax error: ' + error.message + error.showSourceCode());
+				}
+				throw error;
+			});
+		}
 	}
 
 	compile(file) {
-		if(this.isIgnored(file.path)) {
+		const path = file.path;
+		if (this.isIgnored(path)) {
 			return Promise.resolve(file);
 		}
-		const path = file.path;
+
 		const opts = Object.assign({
 			from: path,
 			to: sysPath.basename(path),
@@ -76,26 +106,17 @@ class PostCSSCompiler {
 			opts.map.prev = JSON.stringify(file.map);
 		}
 
-		return this.processor.process(file.data, opts).then(result => {
+		return this._compiler.process(file.data, opts).then(result => {
 			notify(result.warnings());
 
-			const mapping = JSON.stringify(result.map);
-			// Not sure why postcss gives the basename instead of the full path;
-			// TODO: investigate.
-			// For now, "the solution":
-			const src = mapping.sources;
-			if (src && src.length === 1 && src[0] === sysPath.basename(path)) {
-				src[0] = path;
-			}
-
-			if (this.modules) {
-				const moduleOptions = this.modules === true ? {} : this.modules;
+			if (this.config.modules) {
+				const moduleOptions = this.config.modules === true ? {} : this.config.modules;
 				return cssModulify(path, result.css, mapping, moduleOptions);
 			} else {
 				return {
 					path,
 					data: result.css,
-					map: mapping,
+					map: JSON.stringify(result.map),
 				};
 			}
 		}).catch(error => {
@@ -110,7 +131,6 @@ class PostCSSCompiler {
 Object.assign(PostCSSCompiler.prototype, {
 	brunchPlugin: true,
 	type: 'stylesheet',
-	extension: 'css',
 });
 
 module.exports = PostCSSCompiler;
