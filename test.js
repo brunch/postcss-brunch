@@ -79,7 +79,7 @@ describe('Plugin', () => {
       file: 'sample.css'
     };
     return plugin.compile({data, path: 'fixtures/sample.css'}).then(file => {
-      file.map.should.be.eql(map);
+      JSON.parse(file.map).should.eql(map);
     });
   });
 
