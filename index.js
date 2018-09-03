@@ -84,7 +84,7 @@ class PostCSSCompiler {
 				}
 				throw error;
 			});
-		}
+		};
 	}
 
 	compile(file) {
@@ -109,15 +109,13 @@ class PostCSSCompiler {
 		return this._compiler.process(file.data, opts).then(result => {
 			notify(result.warnings());
 
+			const data = result.css;
+			const map = JSON.stringify(result.map);
 			if (this.config.modules) {
-				const moduleOptions = this.config.modules === true ? {} : this.config.modules;
-				return cssModulify(path, result.css, mapping, moduleOptions);
+				const opts = this.config.modules === true ? {} : this.config.modules;
+				return cssModulify(path, data, map, opts);
 			} else {
-				return {
-					path,
-					data: result.css,
-					map: JSON.stringify(result.map),
-				};
+				return {path, data, map};
 			}
 		}).catch(error => {
 			if (error.name === 'CssSyntaxError') {
