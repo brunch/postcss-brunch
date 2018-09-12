@@ -6,15 +6,11 @@ const progeny = require('progeny');
 const logger = require('loggy');
 const anymatch = require('anymatch');
 
-const pad = (stringeable, length) => {
-	return ' '.repeat(length - String(stringeable).length) + String(stringeable);
-};
-
 const notify = (warnings) => {
 	if (!warnings.length) return;
 	const str = warnings.map(warn => {
-		const line = warn.line ? `line ${pad(warn.line, 4)}` : ''
-		const col = warn.col ? ` col ${pad(warn.col, 3)}` : ''
+		const line = warn.line ? `line ${warn.line}` : ''
+		const col = warn.col ? ` col ${warn.col}` : ''
 		const node = warn.node ? ' ' + warn.node.toString() : '';
 		return `\t[${warn.plugin}]:${node}\t${line}${col}: ${warn.text}\n`;
 	}).join('\n');
