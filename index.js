@@ -23,7 +23,7 @@ const cssModulify = (path, data, map, options) => {
 		json = typeof options.getJSON === 'function' && options.getJSON(...args) || args[1]
 	};
 
-	return postcss([postcssModules(Object.assign({getJSON}, options))])
+	return postcss([postcssModules(Object.assign({}, options, {getJSON}))])
 		.process(data, {from: path, map}).then(x => {
 			const exports = 'module.exports = ' + JSON.stringify(json) + ';';
 			return { data: x.css, map: x.map, exports };

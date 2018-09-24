@@ -23,7 +23,6 @@ describe('Tests', () => {
    });
 });
 
-
 describe('Plugin', () => {
   let plugin, config;
 
@@ -114,6 +113,28 @@ describe('Plugin', () => {
 
     return scssPlugin.compile({data, path: 'fixtures/parser.scss'}).then(actual => {
       actual.data.should.be.equal(expected);
+    });
+  })
+
+  it('compile with custom getJSON callback and exports json', () => {
+    const data = '.foo { color: red; }';
+    let isCalled = false;
+
+    const moduleConfig = Object.assign(config, {
+      plugins: {
+        postcss: Object.assign(config.plugins.postcss, {
+          modules: {
+            getJSON: (_, json) => {
+              isCalled = true;
+            }
+          }
+        })
+      }
+    });
+
+    return new Plugin(moduleConfig).compile({data, path: 'a.css'}).then(actual => {
+      isCalled.should.be.equal(true);
+      actual.exports.should.be.equal('module.exports = {"foo":"_foo_20tf4_1"};');
     });
   })
 });
