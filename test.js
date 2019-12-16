@@ -75,7 +75,7 @@ describe('Plugin', () => {
       version: 3,
       sources: [ 'fixtures/sample.css' ],
       names: [],
-      mappings: 'AAKA,QACE,oBAAc,AAAd,qBAAc,AAAd,iBAAc,AAAd,oBAAc,AAAd,YAAc,CACf,AAPD,cACE,GACE,UAAY,CACb,AAMD,GACE,UAAY,CACb,CAPF',
+      mappings: 'AAKA,QACE,mBAAa,CAAb,oBAAa,CAAb,gBAAa,CAAb,mBAAa,CAAb,YACF,CAPA,cACE,GACE,UACF,CAMA,GACE,UACF,CAPF',
       file: 'sample.css'
     };
     return plugin.compile({data, path: 'fixtures/sample.css'}).then(file => {

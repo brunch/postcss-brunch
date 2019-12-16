@@ -1,6 +1,6 @@
 {
   "name": "postcss-brunch",
-  "version": "2.10.1",
+  "version": "3.0.0-pre",
   "author": "Vincent De Oliveira",
   "description": "Adds PostCSS support to brunch.",
   "scripts": {
@@ -16,7 +16,9 @@
     "type": "git",
     "url": "https://github.com/brunch/postcss-brunch.git"
   },
-  "files": ["index.js"],
+  "files": [
+    "index.js"
+  ],
   "dependencies": {
     "anymatch": "^3.0.0",
     "loggy": "^1.0.8",
