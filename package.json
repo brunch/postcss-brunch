@@ -1,6 +1,6 @@
 {
   "name": "postcss-brunch",
-  "version": "3.0.0-pre",
+  "version": "3.0.0",
   "author": "Vincent De Oliveira",
   "description": "Adds PostCSS support to brunch.",
   "scripts": {
