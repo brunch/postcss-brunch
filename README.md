@@ -100,6 +100,22 @@ var style = require('./title.css');
 
 Note: enabling `modules` does so for every stylesheet in your project, so it's all-or-nothing. Even the files you don't require will be transformed into CSS modules (aka will have obfuscated class names, like turn `.title` into `._title_fdphn_1`).
 
+By default, a JSON file with exported classes will be placed next to corresponding CSS. But you have a freedom to make everything you want with exported classes, just use the `getJSON` callback:
+
+```javascript
+plugins: {
+  postcss: {
+    modules: {
+      getJSON: function(cssFileName, json, outputFileName) {
+        const path = require('path');
+        const jsonFileName  = path.resolve('./build/' + cssName + '.json');
+        fs.writeFileSync(cssFileName + ".json", JSON.stringify(json));
+      }
+    }
+  }
+}
+```
+
 ### Dependencies
 
 You can pass options for [progeny](https://github.com/es128/progeny) which retrieves dependencies for the input CSS file.
@@ -110,14 +126,14 @@ properly rebuild your partials on their change.
 
 ```javascript
 module.exports = {
-   // ...
-   plugins: {
-      postcss: {
-         progeny: {
-            prefix: '_'
-         }
+  // ...
+  plugins: {
+    postcss: {
+      progeny: {
+        prefix: '_'
       }
-   }
+    }
+  }
 }
 ```
 
