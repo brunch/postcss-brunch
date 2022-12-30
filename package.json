@@ -31,7 +31,7 @@
     "autoprefixer": "^7.1.2",
     "css-mqpacker": "^6.0.1",
     "csswring": "^6.0.0",
-    "mocha": "^6.2",
+    "mocha": "^10.2",
     "postcss-import": "^10.0.0",
     "postcss-scss": "^1.0.2",
     "should": "^11.1.0"
